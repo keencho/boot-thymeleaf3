@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css" />
+<script type="text/javascript" src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+<title>사용자 정보</title>
+</head>
+<body>
+<th:block th:include="fragments/nav"></th:block>
+	<div class="container" style="min-height: 500px">
+		<table class="table">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">번호</th>
+					<th scope="col">이름</th>
+					<th scope="col">회사</th>
+					<th scope="col">수정</th>
+					<th scope="col">삭제</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<form th:action="@{'/users/{id}'(id=${id})}" th:method="put">
+						<div th:object="${user}">
+							<td scope="row">
+								<span th:text="${id}"></span>
+							</td>
+							<td>
+								<input type="text" name="name" th:field="*{name}" />
+							</td>
+							<td>
+								<input type="text" name="company" th:field="*{company}" />
+							</td>
+							<td>
+								<button type="submit" id="updateButton" class="btn btn-success">수정</button>
+							</td>
+						</form>
+						<td>
+							<form th:action="@{'/users/{id}'(id=${id})}" th:method="delete">
+								<input type="hidden" name="id" th:value="${id}" />
+								<button type="submit" id="deleteButton" class="btn btn-danger">삭제</button>
+							</form>
+						</td>
+					</div>
+				</tr>
+			</tbody>
+		</table>
+		<a href="/users">
+			<div align="middle">
+				<button type="submit" id="bth-search" class="btn btn-primary">
+					뒤로가기
+				</button>
+			</div>
+		</a>
+	</div>
+<th:block th:include="fragments/footer"></th:block>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>삭제 완료</title>
+<th:block th:include="fragments/header"></th:block>
+<script type="text/javascript" src="js/main.js"></script>
+</head>
+
+<body>
+
+	<th:block th:include="fragments/nav"></th:block>
+	<div class="container" style="min-height: 500px">
+		<div class="starter-template">
+			<h1>회원 삭제가 완료되었습니다.</h1>
+		</div>
+		<br>
+		<b>※삭제된 회원 정보</b>
+		<table class="table">
+		  <thead>
+		    <tr>
+		      <th scope="col">번호</th>
+		      <th scope="col">이름</th>
+		      <th scope="col">회사</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		      <th scope="row"><span th:text="${id}"></span></th>
+		      <td><span th:text="${name}"></span></td>
+		      <td><span th:text="${company}"></span></td>
+		    </tr>
+		  </tbody>
+		</table>
+	</div>
+	<th:block th:include="fragments/footer"></th:block>
+</body>
+</html>
