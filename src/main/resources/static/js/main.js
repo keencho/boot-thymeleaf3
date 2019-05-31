@@ -40,9 +40,9 @@ function fire_ajax_submit() {
 
 function button_event() {
 	if (confirm("정말 삭제하시겠습니까??") == true) { //확인
-		document.form.submit();
+		document.deleteform.submit();
 	} else { //취소
-		return;
+		return false;
 	}
 }
 

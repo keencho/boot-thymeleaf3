@@ -44,6 +44,7 @@ public class UserController {
 			return "redirect:/user-login-form";
 		}
 		session.setAttribute("user", sessionUser);
+		session.setAttribute("userId", sessionUser.getId());
 		return "redirect:/";
 	}
 	@GetMapping("/logout")
@@ -55,6 +56,31 @@ public class UserController {
 	@GetMapping("/user-register-form")
 	public String getRegForm(Model model) {
 		return "register";
+	}
+	@GetMapping("/update/{userId}")
+	public String getUpdateForm(@PathVariable(value = "userId") Long userId, Model model) throws ResourceNotFoundException{
+		User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
+		model.addAttribute("user", user);
+		return "update";
+		
+	}
+	@PutMapping("/update/{userId}") // @PatchMapping - 수정한 필드만 고쳐주는 메소드
+	public String updateUser(@PathVariable(value = "userId") Long userId, @Valid User userDetails, Model model) {
+		User user = userRepo.findById(userId).get(); // user는 DB로부터 읽어온 객체
+		user.setName(userDetails.getName()); // userDetails는 전송한 객체
+		user.setUserPw(userDetails.getUserPw());
+		user.setCompany(userDetails.getCompany());
+		userRepo.save(user);
+		return "redirect:/users";
+	}
+	@DeleteMapping("/delete/{userId}")
+	public String delteUser(@PathVariable(value = "userId") Long userId, Model model) {
+		User user = userRepo.findById(userId).get();
+		userRepo.delete(user);
+		model.addAttribute("id", user.getId());
+		model.addAttribute("name", user.getName());
+		model.addAttribute("company", user.getCompany());
+		return "redirect:/users";
 	}
 	@GetMapping("/users")
 	public String getAllUser(Model model) {
@@ -90,7 +116,7 @@ public class UserController {
 		//return ResponseEntity.ok().body(user);
 	}
 	@PutMapping("/users/{id}") // @PatchMapping - 수정한 필드만 고쳐주는 메소드
-	public String updateUser(@PathVariable(value = "id") Long userId, @Valid User userDetails, Model model) {
+	public String updateU(@PathVariable(value = "id") Long userId, @Valid User userDetails, Model model) {
 		User user = userRepo.findById(userId).get(); // user는 DB로부터 읽어온 객체
 		user.setName(userDetails.getName()); // userDetails는 전송한 객체
 		user.setCompany(userDetails.getCompany());
@@ -98,7 +124,7 @@ public class UserController {
 		return "redirect:/users";
 	}
 	@DeleteMapping("/users/{id}")
-	public String delteUser(@PathVariable(value = "id") Long userId, Model model) {
+	public String delteU(@PathVariable(value = "id") Long userId, Model model) {
 		User user = userRepo.findById(userId).get();
 		userRepo.delete(user);
 		model.addAttribute("id", user.getId());

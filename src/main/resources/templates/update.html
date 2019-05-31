@@ -1,0 +1,63 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:include="fragments/ka_header"></th:block>	
+	<!-- breadcrumb start-->
+    <section class="breadcrumb breadcrumb_bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb_iner text-center">
+                        <div class="breadcrumb_iner_item">
+							<h2>회원정보 수정</h2>
+                            <a href="/"><font color="white"><p>홈</font></a><span>//</span><a href="/update"><font color="white">회원정보 수정</font><a/></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+	<!-- End banner Area -->
+	<div class="whole-wrap">
+		<div class="container box_1170">
+			<div class="section-top-border">
+				<div class="row">
+					<div class="col-lg-2 col-md-2 mt-sm-30"></div>
+					<div class="col-lg-8 col-md-8">
+						<h3 class="mb-30">회원정보</h3>
+						<form th:action="@{'/update/{userId}'(userId=${userId})}" th:method="put">
+							<div th:object="${user}">
+								<div class="mt-10">
+									<input type="text" name="userId" placeholder="사용자 아이디"
+										onfocus="this.placeholder = ''"
+										onblur="this.placeholder = '사용자 아이디'" required=""
+										class="single-input" th:field="*{userId}" disabled>
+								</div>
+								<div class="mt-10">
+									<input type="password" name="userPw" placeholder="기존 비밀번호를 입력하거나 새로운 비밀번호를 입력하세요"
+										onfocus="this.placeholder = ''"
+										onblur="this.placeholder = '사용자 암호'"
+										class="single-input" th:field="*{userPw}">
+								</div>
+								<div class="mt-10">
+									<input type="text" name="name" placeholder="사용자 이름"
+										onfocus="this.placeholder = ''"
+										onblur="this.placeholder = '사용자 이름'" required=""
+										class="single-input" th:field="*{name}">
+								</div>
+								<div class="mt-10">
+									<input type="text" name="company" placeholder="사용자 회사명"
+										onfocus="this.placeholder = ''"
+										onblur="this.placeholder = '사용자 회사명'" required=""
+										class="single-input" th:field="*{company}">
+								</div>
+								<div class="form-group mt-3">
+									<button type="submit" class="button button-contactForm btn_4">수정하기</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<th:block th:include="fragments/ka_footer"></th:block>	

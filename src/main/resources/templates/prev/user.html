@@ -23,7 +23,7 @@
 			</thead>
 			<tbody>
 				<tr>
-					<form th:action="@{'/users/{id}'(id=${id})}" th:method="put">
+					<form th:action="@{'/users/{userId}'(userId=${id})}" th:method="put">
 						<div th:object="${user}">
 							<td scope="row">
 								<span th:text="${id}"></span>
