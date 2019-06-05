@@ -16,12 +16,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import idu.cs.domain.User;
+import idu.cs.entity.UserEntity;
 import idu.cs.exception.ResourceNotFoundException;
 import idu.cs.repository.UserRepository;
+import idu.cs.service.UserService;
 
 @Controller
 public class UserController {
-	@Autowired UserRepository userRepo; // Dependency Injection
+	// @Autowired UserRepository userRepo; // Dependency Injection
+	@Autowired UserService userService;
 	
 	@GetMapping("/")
 	public String home(Model model) {
@@ -31,10 +34,11 @@ public class UserController {
 	public String getLoginForm(Model model) {
 		return "login";
 	}
+
 	@PostMapping("/login")
-	public String loginUser(@Valid User user, HttpSession session) {
+	public String loginUser(@Valid UserEntity user, HttpSession session) {
 		System.out.println("login process: " + user.getUserId());
-		User sessionUser = userRepo.findByUserId(user.getUserId());
+		User sessionUser = userService.getUserByUserId(user.getUserId());
 		if(sessionUser == null) {
 			System.out.println("id error: ");
 			return "redirect:/user-login-form";
@@ -47,26 +51,43 @@ public class UserController {
 		session.setAttribute("userId", sessionUser.getId());
 		return "redirect:/";
 	}
+
 	@GetMapping("/logout")
 	public String logoutUser(HttpSession session){
 		session.removeAttribute("user");
 		// session invalidate();
 		return "redirect:/";
 	}
+	
+	@GetMapping("/users")
+	public String getAllUser(Model model, HttpSession session) {
+		model.addAttribute("users", userService.getUsers());
+		return "userlist";
+	}
+
 	@GetMapping("/user-register-form")
 	public String getRegForm(Model model) {
 		return "register";
 	}
-	@GetMapping("/update/{userId}")
+	
+	@PostMapping("/users")
+	public String createUser(@Valid User user, Model model) {
+		userService.saveUser(user);
+		return "redirect:/users"; // get 방식으로 해당 url에 redirect
+	}
+	
+	/*
+	 @GetMapping("/update/{userId}")
+	
 	public String getUpdateForm(@PathVariable(value = "userId") Long userId, Model model) throws ResourceNotFoundException{
-		User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
+		UserEntity user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
 		model.addAttribute("user", user);
 		return "update";
 		
 	}
 	@PutMapping("/update/{userId}") // @PatchMapping - 수정한 필드만 고쳐주는 메소드
-	public String updateUser(@PathVariable(value = "userId") Long userId, @Valid User userDetails, Model model) {
-		User user = userRepo.findById(userId).get(); // user는 DB로부터 읽어온 객체
+	public String updateUser(@PathVariable(value = "userId") Long userId, @Valid UserEntity userDetails, Model model) {
+		UserEntity user = userRepo.findById(userId).get(); // user는 DB로부터 읽어온 객체
 		user.setName(userDetails.getName()); // userDetails는 전송한 객체
 		user.setUserPw(userDetails.getUserPw());
 		user.setCompany(userDetails.getCompany());
@@ -75,31 +96,19 @@ public class UserController {
 	}
 	@DeleteMapping("/delete/{userId}")
 	public String delteUser(@PathVariable(value = "userId") Long userId, Model model) {
-		User user = userRepo.findById(userId).get();
+		UserEntity user = userRepo.findById(userId).get();
 		userRepo.delete(user);
 		model.addAttribute("id", user.getId());
 		model.addAttribute("name", user.getName());
 		model.addAttribute("company", user.getCompany());
 		return "redirect:/users";
 	}
-	@GetMapping("/users")
-	public String getAllUser(Model model) {
-		model.addAttribute("users", userRepo.findAll());
-		return "userlist";
-	}
-	@PostMapping("/users")
-	public String createUser(@Valid User user, Model model) {
-		if(userRepo.save(user) != null)
-			System.out.println("Database register complete");
-		else
-			System.out.println("Datbase register fail");
-		model.addAttribute("users", userRepo.findAll());
-		return "redirect:/users";
-	}
+
+
 	@GetMapping("/users/{id}")
 	public String getUserById(@PathVariable(value = "id") Long userId, Model model)
 			throws ResourceNotFoundException {
-		User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
+		UserEntity user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
 		// model.addAttribute("id", user.getId());
 		// model.addAttribute("name", user.getName());
 		// model.addAttribute("company", user.getCompany());
@@ -110,14 +119,14 @@ public class UserController {
 	@GetMapping("/users/fn")
 	public String getUserByName(@Param(value="name") String name, Model model)
 			throws ResourceNotFoundException {
-		List<User> users = userRepo.findByName(name);
+		List<UserEntity> users = userRepo.findByName(name);
 		model.addAttribute("users", users);
 		return "userlist";
 		//return ResponseEntity.ok().body(user);
 	}
 	@PutMapping("/users/{id}") // @PatchMapping - 수정한 필드만 고쳐주는 메소드
-	public String updateU(@PathVariable(value = "id") Long userId, @Valid User userDetails, Model model) {
-		User user = userRepo.findById(userId).get(); // user는 DB로부터 읽어온 객체
+	public String updateU(@PathVariable(value = "id") Long userId, @Valid UserEntity userDetails, Model model) {
+		UserEntity user = userRepo.findById(userId).get(); // user는 DB로부터 읽어온 객체
 		user.setName(userDetails.getName()); // userDetails는 전송한 객체
 		user.setCompany(userDetails.getCompany());
 		userRepo.save(user);
@@ -125,12 +134,13 @@ public class UserController {
 	}
 	@DeleteMapping("/users/{id}")
 	public String delteU(@PathVariable(value = "id") Long userId, Model model) {
-		User user = userRepo.findById(userId).get();
+		UserEntity user = userRepo.findById(userId).get();
 		userRepo.delete(user);
 		model.addAttribute("id", user.getId());
 		model.addAttribute("name", user.getName());
 		model.addAttribute("company", user.getCompany());
 		return "user-deleted";
 	}
+	 */
+
 }
-// test2
