@@ -75,6 +75,25 @@ public class UserController {
 		userService.saveUser(user);
 		return "redirect:/users"; // get 방식으로 해당 url에 redirect
 	}
+
+	@GetMapping("/user-update-form")
+	public String getUpdateForm(Model model, HttpSession session) {
+		User user = (User) session.getAttribute("user");
+		userService.getUserById(user.getId());
+		model.addAttribute("user", user);
+		return "info";
+	}
+	
+	@PutMapping("/users/{id}") // @PatchMapping - 수정한 필드만 고쳐주는 메소드
+	public String updateU(@PathVariable(value = "id") Long id, @Valid User user, Model model, HttpSession session) {
+		/*
+		 * updateUser 객체는 사용자가 입력한 폼의 값 내용 : id값이 없음.
+		 */
+		user.setId(userService.getUserById(id).getId());
+		userService.updateUser(user);
+		session.setAttribute("user", user);
+		return "redirect:/users";
+	}
 	
 	/*
 	 @GetMapping("/update/{userId}")
@@ -124,14 +143,7 @@ public class UserController {
 		return "userlist";
 		//return ResponseEntity.ok().body(user);
 	}
-	@PutMapping("/users/{id}") // @PatchMapping - 수정한 필드만 고쳐주는 메소드
-	public String updateU(@PathVariable(value = "id") Long userId, @Valid UserEntity userDetails, Model model) {
-		UserEntity user = userRepo.findById(userId).get(); // user는 DB로부터 읽어온 객체
-		user.setName(userDetails.getName()); // userDetails는 전송한 객체
-		user.setCompany(userDetails.getCompany());
-		userRepo.save(user);
-		return "redirect:/users";
-	}
+
 	@DeleteMapping("/users/{id}")
 	public String delteU(@PathVariable(value = "id") Long userId, Model model) {
 		UserEntity user = userRepo.findById(userId).get();

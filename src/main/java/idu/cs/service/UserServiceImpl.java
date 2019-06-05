@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import idu.cs.domain.User;
 import idu.cs.entity.UserEntity;
+import idu.cs.exception.ResourceNotFoundException;
 import idu.cs.repository.UserRepository;
 
 @Service("userService")
@@ -17,8 +18,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserById(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		UserEntity entity = null;
+		try {
+			entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + id));
+		} catch (ResourceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+		User user = entity.buildDomain();
+		return user;
 	}
 
 	@Override
@@ -74,9 +82,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateUser(User User) {
-		// TODO Auto-generated method stub
-
+	public void updateUser(User user) {
+		UserEntity entity = new UserEntity();
+		entity.buildEntity(user);
+		repository.save(entity);
 	}
 
 	@Override

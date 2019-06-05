@@ -27,7 +27,7 @@
                                     <a class="nav-link" href="/logout">Logout</a>
                                 </li>
                                 <li th:if="${session.user}" class="nav-item">
-                                    <a class="nav-link" th:href="@{/update/{userId}(userId=${session.userId})}">Update</a>
+                                    <a class="nav-link" href="/user-update-form">Info</a>
                                 </li>
                                 <li th:if="${session.user}" class="nav-item">
                                     <a class="nav-link" href="/users">users</a>
